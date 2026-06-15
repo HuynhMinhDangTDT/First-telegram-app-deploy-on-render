@@ -17,7 +17,7 @@ def run_flask():
 # -------------------------------------------------------------
 
 # --- PHẦN 2: CODE BOT TELEGRAM CỦA BẠN ---
-TOKEN = os.getenv("TELEGRAM_TOKEN", "THAY_TOKEN_CỦA_BẠN_VÀO_ĐÂY")
+TOKEN = os.getenv("TELEGRAM_TOKEN", "8601184029:AAFVeAxydN6Xi06g4SMsDN32vuywhC8iyuc")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
