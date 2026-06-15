@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Game Hứng Trứng</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { margin: 0; padding: 0; background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        canvas { background: #87CEEB; display: block; max-width: 100%; max-height: 100vh; }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Khởi tạo các biến trong game
+    let score = 0;
+    let gameOver = false;
+    
+    // Cấu hình Giỏ hứng trứng
+    const basket = { x: 160, y: 530, width: 80, height: 20, speed: 15 };
+    
+    // Cấu hình Quả trứng
+    const egg = { x: 200, y: 0, radius: 12, speed: 4 };
+
+    // Tự động điều chỉnh vị trí quả trứng rơi ngẫu nhiên
+    function resetEgg() {
+        egg.x = Math.random() * (canvas.width - egg.radius * 2) + egg.radius;
+        egg.y = 0;
+        egg.speed += 0.3; // Tăng dần độ khó
+    }
+
+    // Vẽ chiếc giỏ
+    function drawBasket() {
+        ctx.beginPath();
+        ctx.rect(basket.x, basket.y, basket.width, basket.height);
+        ctx.fillStyle = "#8B4513"; // Màu nâu gỗ
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Vẽ quả trứng
+    function drawEgg() {
+        ctx.beginPath();
+        ctx.arc(egg.x, egg.y, egg.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "#FFF8DC"; // Màu vỏ trứng
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Hiển thị điểm số
+    function drawScore() {
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "#000";
+        ctx.fillText("Điểm: " + score, 15, 30);
+    }
+
+    // Cập nhật trạng thái game chuyển động
+    function update() {
+        if (gameOver) return;
+
+        egg.y += egg.speed; // Trứng rơi xuống
+
+        # Xử lý va chạm: Kiểm tra trứng có rơi trúng giỏ không
+        if (egg.y + egg.radius >= basket.y && egg.x >= basket.x && egg.x <= basket.x + basket.width) {
+            score += 1;
+            resetEgg();
+        }
+
+        # Nếu trứng rơi quá đáy màn hình -> Game Over
+        if (egg.y > canvas.height) {
+            gameOver = true;
+        }
+    }
+
+    # Vẽ toàn bộ khung hình
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBasket();
+        drawEgg();
+        drawScore();
+
+        if (gameOver) {
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "red";
+            ctx.fillText("GAME OVER", 110, 300);
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "#000";
+            ctx.fillText("Chạm màn hình để chơi lại", 85, 340);
+        }
+    }
+
+    # Vòng lặp chính của game
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+
+    # Điều khiển bằng chuột hoặc chạm màn hình (Vuốt để di chuyển giỏ)
+    function moveBasket(e) {
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let rect = canvas.getBoundingClientRect();
+        let canvasX = (clientX - rect.left) * (canvas.width / rect.width);
+        basket.x = canvasX - basket.width / 2;
+        
+        # Giới hạn không cho giỏ chạy ra ngoài màn hình
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+
+        if (gameOver) {
+            gameOver = false;
+            score = 0;
+            egg.speed = 4;
+            resetEgg();
+        }
+    }
+
+    window.addEventListener("mousemove", moveBasket);
+    window.addEventListener("touchmove", moveBasket);
+    window.addEventListener("touchstart", moveBasket);
+
+    # Bắt đầu chạy game
+    gameLoop();
+</script>
+</body>
+</html>
