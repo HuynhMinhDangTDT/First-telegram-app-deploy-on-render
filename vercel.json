@@ -2,8 +2,22 @@
 //     "rewrites": [{ "source": "/(.*)", "destination": "/api/webhook" }]
 // }
 
+// {
+//     "rewrites": [
+//     { "source": "/api/(.*)", "destination": "/api/webhook" }
+//     ]
+// }
+
 {
-    "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/webhook" }
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/webhook.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/webhook.py" },
+    { "source": "/(.*)", "destination": "/public/$1" }
+  ]
 }
