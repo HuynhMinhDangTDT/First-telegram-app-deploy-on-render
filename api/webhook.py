@@ -62,4 +62,4 @@ if __name__ == "__main__":
     print("--- ĐANG CHẠY FLASK TRÊN MÁY LOCAL ---")
     print("Mở trình duyệt truy cập: http://127.0.0.1:8080")
     # debug=True giúp tự động tải lại code khi bạn sửa file
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=7860)
